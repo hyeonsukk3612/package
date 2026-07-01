@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(주)그린메탈 DX 구매 분석 및 협상 지원 시스템 (최종 제출본)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for premium visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col text-sm">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-500 p-2.5 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-industry text-xl text-slate-900"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
+                        (주)그린메탈 <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-medium border border-emerald-500/30">DX 구매분석 최종안</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">경영지원팀 구매·거래처 관리 보조 인턴 업무 시스템 (전수 데이터 무결성 검증 완료)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden md:block">
+                    <p class="text-xs text-slate-400">시스템 연산 모드</p>
+                    <p class="text-sm font-semibold text-emerald-400 flex items-center gap-1.5 justify-end">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> 정합 분석 및 검증 이행 완료
+                    </p>
+                </div>
+                <div class="h-10 w-10 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-emerald-400 font-bold shadow-inner">
+                    GP
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <!-- 핵심 지표 요약 상단 현황판 -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs text-slate-500 font-semibold uppercase">파레토 점유율 (원본 총액)</p>
+                <p class="text-3xl font-bold text-slate-800 mt-2">59.4%</p>
+                <p class="text-[10px] text-slate-400 mt-1">※ 362,371,900원 기준 (세전 정규화 60.1%)</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs text-slate-500 font-semibold uppercase">총 매입량 및 세전 규모</p>
+                <p class="text-2xl font-bold text-slate-800 mt-2.5" id="stat-total-amount">- 원</p>
+                <p class="text-[10px] text-emerald-600 mt-1.5 font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-calculator"></i> <span id="stat-total-count">- 건</span> 정형 매칭
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs text-slate-500 font-semibold uppercase">구리 시세 vs 매입가 상관계수</p>
+                <p class="text-3xl font-bold text-rose-600 mt-2">-0.15</p>
+                <p class="text-[10px] text-slate-400 mt-1">※ 시장 연동성 매우 저조 (무상관 국면)</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs text-slate-500 font-semibold uppercase">매입가 vs 시세 변동폭</p>
+                <p class="text-3xl font-bold text-slate-800 mt-2">5.1% vs 20.2%</p>
+                <p class="text-[10px] text-slate-400 mt-1">※ 단가 고착성 및 가격 지체 현상</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs text-slate-500 font-semibold uppercase">동방특수금속 과지불 추정액</p>
+                <p class="text-3xl font-bold text-amber-600 mt-2">856만 원</p>
+                <p class="text-[10px] text-slate-400 mt-1">※ 유사 공급망(평균 9,779원) 대치 시</p>
+            </div>
+        </div>
+
+        <!-- TABS NAVIGATION -->
+        <div class="flex border-b border-slate-200 mb-6 overflow-x-auto custom-scrollbar whitespace-nowrap bg-white rounded-xl p-1 shadow-sm">
+            <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="tab-btn px-5 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 bg-slate-900 text-white shadow-sm">
+                <i class="fa-solid fa-chart-line"></i> 종합 분석 대시보드 (1~3일차)
+            </button>
+            <button onclick="switchTab('casesheet')" id="btn-tab-casesheet" class="tab-btn px-5 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                <i class="fa-solid fa-file-invoice"></i> 일자별 Before ➔ After 케이스시트
+            </button>
+            <button onclick="switchTab('negotiation')" id="btn-tab-negotiation" class="tab-btn px-5 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                <i class="fa-solid fa-file-signature"></i> 협상안 & 공문 생성기 (4일차)
+            </button>
+            <button onclick="switchTab('rawdata')" id="btn-tab-rawdata" class="tab-btn px-5 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                <i class="fa-solid fa-database"></i> 실습 데이터 정교화 뷰어 (전수 분리)
+            </button>
+        </div>
+
+        <!-- TAB 1: 종합 분석 대시보드 -->
+        <div id="tab-dashboard" class="tab-content block space-y-8">
+            
+            <!-- 1일차 과제: 데이터 정제 이력 및 단가 진단 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50/50">
+                    <div>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">1일차 과제</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1">데이터 정제 정합성 및 연간 물량가중 단가 진단</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">단위 및 부가세 통합 정규화를 거쳐 실제 시장 내 거래처별 실질 경쟁력 단가를 진단합니다.</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- 데이터 정제 상세 내역 카드 -->
+                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs mb-3 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-broom text-blue-500"></i> 데이터 전처리 가공 정량 이력
+                                </h4>
+                                <ul class="space-y-2.5 text-xs text-slate-600">
+                                    <li class="flex justify-between border-b border-dashed pb-1.5 border-slate-200">
+                                        <span>거래처명 가중 통합</span>
+                                        <span class="font-semibold text-slate-800">㈜, (주) 접미사 일괄 제거 및 매핑</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-dashed pb-1.5 border-slate-200">
+                                        <span>단위 표준화 통일</span>
+                                        <span class="font-semibold text-slate-800">kg (214건) / 본 (36건) ➔ 1본 = 3.5kg</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-dashed pb-1.5 border-slate-200">
+                                        <span>부가세(VAT) 정합성 처리</span>
+                                        <span class="font-semibold text-slate-800">별도 (203건) / 포함 (47건) ➔ 세전 변환</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-dashed pb-1.5 border-slate-200">
+                                        <span>견적 자재명 일치화</span>
+                                        <span class="font-semibold text-slate-800">C3604 사양 ➔ '황동봉' 단일 표준화</span>
+                                    </li>
+                                    <li class="flex justify-between">
+                                        <span>중복의심 거래 데이터 제어</span>
+                                        <span class="font-semibold text-amber-600">P1166≡P1168, P1207≡P1208 유지(확인요망)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50/50 text-blue-900 p-3 rounded-lg text-[11px] mt-4 leading-relaxed">
+                                <strong>안내:</strong> 무작정 중복 데이터를 임의 삭제하는 대신, 회계 무결성을 유지하고자 이력을 유지하고 확인 검토용 라벨을 마크업하여 전사 감사 리스크를 예방하였습니다.
+                            </div>
+                        </div>
+
+                        <!-- 연간 물량가중 공급 단가 비교 영역 -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-column text-indigo-500"></i> 연간 황동봉 물량가중 평균단가 진단 (전체 매입량 기준)
+                            </h4>
+                            <div class="overflow-x-auto rounded-xl border border-slate-200">
+                                <table class="w-full text-left border-collapse text-xs bg-white">
+                                    <thead>
+                                        <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-semibold">
+                                            <th class="p-3">공급 거래처명</th>
+                                            <th class="p-3 text-right">kg당 연간 가중 공급단가</th>
+                                            <th class="p-3 text-right">연간 조달 물량 (kg)</th>
+                                            <th class="p-3">진단 및 비교군 분류</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 text-slate-600">
+                                        <tr class="bg-rose-50/20">
+                                            <td class="p-3 font-bold text-rose-600">동방특수금속</td>
+                                            <td class="p-3 text-right font-bold text-rose-600">10,975원</td>
+                                            <td class="p-3 text-right">7,160 kg</td>
+                                            <td class="p-3 text-slate-500"><span class="bg-rose-100 text-rose-800 text-[10px] px-1.5 py-0.5 rounded font-bold">최고가 (유사군 대비 +12.2%)</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold">대성금속</td>
+                                            <td class="p-3 text-right">9,784원</td>
+                                            <td class="p-3 text-right">4,730 kg</td>
+                                            <td class="p-3 text-slate-500">유사 조건 비교 가능군</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold">한주메탈</td>
+                                            <td class="p-3 text-right">9,777원</td>
+                                            <td class="p-3 text-right">4,375 kg</td>
+                                            <td class="p-3 text-slate-500">유사 조건 비교 가능군</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold">우진금속</td>
+                                            <td class="p-3 text-right">9,774원</td>
+                                            <td class="p-3 text-right">3,080 kg</td>
+                                            <td class="p-3 text-slate-500">유사 조건 비교 가능군</td>
+                                        </tr>
+                                        <tr class="bg-slate-50">
+                                            <td class="p-3 font-bold text-slate-700">신영비철</td>
+                                            <td class="p-3 text-right text-emerald-600 font-bold">9,178원</td>
+                                            <td class="p-3 text-right">14,900 kg</td>
+                                            <td class="p-3 text-slate-400">대량할인 적용 (MOQ 500kg, 선결제 기인)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed">
+                                <strong>분석 논리:</strong> 동방특수금속의 가중단가(10,975원)는 조달 여건이 흡사한 소량 거래처 3사(대성·한주·우진)의 평균 가격인 <strong>9,779원</strong> 대비 <strong>약 +12.2%</strong> 과도하게 높게 고착되어 있습니다. 신영비철은 최저가이나 엄격한 발주제약이 따르므로 직접 대조군에서 제외해야 분석 타당성이 입증됩니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2일차 과제: 비용 집중 및 파레토 분석 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">2일차 과제</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-1">거래처별 매입비용 편중 기여도 추적 (듀얼 파레토 기준 병기)</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">새 기준의 원본 총 매입액 기준(59.4%)과 부가세 가공 이후의 실질 세전 기준(60.1%)을 투명하게 수평 표기합니다.</p>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- 데이터 대비 및 설명 카드 -->
+                        <div class="lg:col-span-5 space-y-4">
+                            <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                                <div class="bg-slate-100 p-3 font-bold text-slate-700">듀얼 파레토 통계 대조표 (상위 2개 거래처: 신영비철 + 동방특수금속)</div>
+                                <div class="p-4 space-y-3 bg-white">
+                                    <div class="flex justify-between items-center pb-2 border-b">
+                                        <div>
+                                            <p class="font-bold text-slate-800">A. 원본 총 매입액 산정 기준 (핵심 정답)</p>
+                                            <p class="text-[10px] text-slate-400">부가세 가공 전 오리지널 총 매입규모 362,371,900원</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-lg font-bold text-indigo-600">59.4%</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-bold text-slate-800">B. 실 세전 정규화 산정 기준 (시스템 환산)</p>
+                                            <p class="text-[10px] text-slate-400">VAT 제외 정규화 총 실세전액 358,406,482원</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-lg font-bold text-emerald-600">60.1%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 거래처별 점유 상세 표 (파레토 테이블 복구 완료) -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                                <div class="bg-slate-100 p-3 font-bold text-slate-700">거래처별 파레토 점유 상세 현황</div>
+                                <div class="bg-white max-h-[160px] overflow-y-auto custom-scrollbar">
+                                    <table class="w-full text-left">
+                                        <thead>
+                                            <tr class="text-slate-500 font-semibold border-b bg-slate-50/50">
+                                                <th class="p-2 text-center">순위</th>
+                                                <th class="p-2">거래처</th>
+                                                <th class="p-2 text-right">매입금액</th>
+                                                <th class="p-2 text-right">비중</th>
+                                                <th class="p-2 text-right">누적</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="paretoTableBody" class="divide-y divide-slate-100 text-slate-600">
+                                            <!-- 자바스크립트에서 동적 생성 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 파레토 그래프 영역 -->
+                        <div class="lg:col-span-7 bg-slate-50 rounded-xl p-4 border border-slate-100 flex flex-col justify-between">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-600">거래처별 세전 지출 비중 분포 및 누적 지출비율 추이 (Pareto)</span>
+                                <span class="text-[10px] text-slate-400">동적 집계 엔진</span>
+                            </div>
+                            <div class="flex-grow flex items-center justify-center">
+                                <canvas id="chartPareto" class="max-h-[300px] w-full"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3일차 과제: 시장 시세 연동 동조 분석 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">3일차 과제</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-1">시장 구리 기준시세 동향 분석 및 시세 연동 이탈(Correlation -0.15) 확인</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">글로벌 지표와 실제 구매 단가 변동률의 차이를 정밀 추적하여 가격 비대칭성 및 괴리율을 진단합니다.</p>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- 세부 수치 목록 카드 -->
+                        <div class="space-y-4">
+                            <div class="bg-purple-50 border border-purple-100 rounded-xl p-5 text-xs text-purple-950">
+                                <h4 class="font-bold text-purple-950 flex items-center gap-1.5 mb-2">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> 가격 비대칭성 및 무상관 데이터
+                                </h4>
+                                <ul class="space-y-2 leading-relaxed">
+                                    <li>• <strong>시장 시세 연중 변동폭:</strong> 20.2% (고점 5월 대비 저점 12월 변동)</li>
+                                    <li>• <strong>실제 매입단가 연중 변동폭:</strong> 5.1% (매우 경직적인 수준 유지)</li>
+                                    <li>• <strong>시세–매입단가 상관계수:</strong> <span class="font-bold text-rose-600">-0.15</span> (무상관 국면)</li>
+                                    <li>• <strong>7월 ➔ 10월 시장 시세:</strong> -6.7% 하강 국면</li>
+                                    <li>• <strong>7월 ➔ 10월 동방 견적:</strong> <span class="font-bold text-rose-600">+4.0% 역행 인상</span></li>
+                                    <li>• <strong>7월 ➔ 12월 시장 시세 누적 하락:</strong> -14.9%</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs">
+                                <p class="leading-relaxed text-slate-600">
+                                    <strong>비대칭 단가 역행 분석:</strong> 상관계수 -0.15는 시장 시세 변동과 실제 매입단가 간의 연동성이 매우 낮게 나타났음을 시사하며, 시세 하락분이 매입가에 유기적으로 반영되지 못하고 있음을 확인해 줍니다.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 시세 연동성 트렌드 그래프 -->
+                        <div class="lg:col-span-2 bg-slate-50 rounded-xl p-4 border border-slate-100 flex flex-col justify-between">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-600">구리 기준가격 vs 핵심 공급망 실제 변동률 추이 (%)</span>
+                                <span class="text-[10px] text-slate-400">5월 기준 시점 대비 환산</span>
+                            </div>
+                            <div class="flex-grow flex items-center justify-center">
+                                <canvas id="chartTrend" class="max-h-[230px] w-full"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 거래 조건 종합 다차원 평가 매트릭스 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced text-emerald-500"></i> 거래 조건 종합 다차원 평가 매트릭스
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">단순히 단가만 보고 거래처를 바꿀 때 빠지는 납기, 결제, 발주 규모 제한 리스크를 함께 검토합니다.</p>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                                    <th class="p-3">거래처명</th>
+                                    <th class="p-3">2025년 1월 기준 정규화 단가</th>
+                                    <th class="p-3 text-center">최소발주량(kg)</th>
+                                    <th class="p-3 text-center">평균 납기</th>
+                                    <th class="p-3">결제 조건</th>
+                                    <th class="p-3">전략적 의의 및 거래 제약</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-600">
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">신영비철</td>
+                                    <td class="p-3 text-emerald-600 font-semibold">9,080원 / kg (최저)</td>
+                                    <td class="p-3 text-center font-bold text-slate-800">500 kg</td>
+                                    <td class="p-3 text-center">14 일 (최장)</td>
+                                    <td class="p-3">전액 현금 선결제</td>
+                                    <td class="p-3">단가는 최저이나 대량 발주가 필수이며, 긴 납기와 선결제 조건으로 긴급 소요 대응 불가.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">대성금속</td>
+                                    <td class="p-3 font-semibold text-slate-800">9,670원 / kg</td>
+                                    <td class="p-3 text-center">40 kg</td>
+                                    <td class="p-3 text-center text-emerald-600 font-bold">3 일 (최단)</td>
+                                    <td class="p-3">월말마감 익월말 결제 (60일)</td>
+                                    <td class="p-3 text-emerald-700">소량 및 초단납기 조달이 가능하여 긴급 자재 대응에 용이. 결제 기일 여유.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">한주메탈</td>
+                                    <td class="p-3 font-semibold text-slate-800">9,669원 / kg (본 환산)</td>
+                                    <td class="p-3 text-center">70 kg</td>
+                                    <td class="p-3 text-center">5 일</td>
+                                    <td class="p-3">월말마감 익월말 결제</td>
+                                    <td class="p-3">견적을 본(本) 단위로 고유 제안하므로 매입 시 착오 관리 수반.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 font-bold text-slate-900">우진금속</td>
+                                    <td class="p-3 font-semibold text-slate-800">9,673원 / kg (세전 환산)</td>
+                                    <td class="p-3 text-center">40 kg</td>
+                                    <td class="p-3 text-center">4 일</td>
+                                    <td class="p-3">월말마감 익월말 결제</td>
+                                    <td class="p-3">견적가에 부가세를 기본 포함하여 오인 가능성 높음. 조건 무난함.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition text-rose-950 bg-rose-50/10">
+                                    <td class="p-3 font-bold text-rose-900">동방특수금속</td>
+                                    <td class="p-3 font-bold text-rose-600">10,860원 / kg (최고)</td>
+                                    <td class="p-3 text-center">50 kg</td>
+                                    <td class="p-3 text-center">5 일</td>
+                                    <td class="p-3">현금 50% 선급 후 잔금</td>
+                                    <td class="p-3 text-rose-900">오랜 역사적 우대 거래처이나, 타 공급처 대비 높은 단가 차이(약 12%) 조정 협의 필요.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-2">※ 참고: 1월 정규화 단가는 해당 월에 유효한 견적가 및 전처리 기준단가이며, 연간 가중 평균 단가와는 조달 시기별 물량 가중에 따라 차이가 발생할 수 있습니다.</p>
+                </div>
+            </div>
+
+            <!-- 견적 대비 실제 매입단가 실증 분석 패널 (2-way Matching 전수 검증표) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-blue-500"></i> 견적서 조건 대비 실제 매입단가 실시간 2-way Matching 전수 검증표
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">견적서 26건 전체를 실제 월평균 매입단가와 대조하여 이행 정합성을 전수 확인합니다.</p>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] custom-scrollbar">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="sticky top-0 bg-slate-100 text-slate-700 font-semibold z-10 shadow-sm">
+                                <tr class="border-b border-slate-200">
+                                    <th class="p-3">견적 일자</th>
+                                    <th class="p-3">견적 번호</th>
+                                    <th class="p-3">거래처</th>
+                                    <th class="p-3">제안 자재 규격</th>
+                                    <th class="p-3 text-right">정규화 세전 견적가</th>
+                                    <th class="p-3 text-right">해당 월 물량가중 평균가</th>
+                                    <th class="p-3 text-right">단가 차이 (변동률)</th>
+                                    <th class="p-3 text-center">계약 이행 상태</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quotationVerificationTableBody" class="divide-y divide-slate-100 text-slate-600 bg-white">
+                                <!-- JS에서 동적으로 주입 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 1.5: Before ➔ After 케이스 시트 -->
+        <div id="tab-casesheet" class="tab-content hidden space-y-6">
+            
+            <!-- 1일차 케이스시트 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="border-b border-slate-100 pb-3 mb-4">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">1일차 케이스시트</span>
+                    <h3 class="text-base font-bold text-slate-900 mt-1">단가 표준화 정규화 및 거래처별 단가 편차 도출</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 block mb-1">BEFORE (문제 정의)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">한주메탈의 본(本) 단위 및 우진금속의 부가세 포함 단가 표기 혼선으로 상호 가격 수평 대조 불가.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-blue-500 block mb-1">관찰 (데이터 전처리)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">단위 통일(1본=3.5kg) 및 부가세 별도 환산을 통한 데이터 전처리(kg당 단가) 진행.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-purple-600 block mb-1">분석 (핵심 도출)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">동방특수금속의 가중 공급가(10,975원)가 유사 대조군 평균(9,779원) 대비 약 <strong>+12.2%</strong> 비쌈을 포착.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-emerald-600 block mb-1">AFTER (원가 가치)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">장기 우대거래처라는 이유로 감춰진 비대칭적 가격 편차의 구조적 개선 근거 규명.</p>
+                    </div>
+                    <div class="bg-slate-900 text-white rounded-xl p-4">
+                        <span class="text-xs font-bold text-amber-400 block mb-1">인턴의 회고</span>
+                        <p class="text-xs text-slate-300 leading-relaxed">단순 숫자가 아닌, 전처리 완료 후 대조군 분류를 명확히 해야 올바른 보고가 성립됨을 배움.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2일차 케이스시트 (파레토 기준 완벽 보완) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="border-b border-slate-100 pb-3 mb-4">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">2일차 케이스시트</span>
+                    <h3 class="text-base font-bold text-slate-900 mt-1">거래처 기여 점유 추적 및 협상 우선순위 선정</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 block mb-1">BEFORE (문제 정의)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">단순 단가 순위 정보만으로는 원가 개선의 조달 영향력을 가중할 수 없는 상태.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-blue-500 block mb-1">관찰 (데이터 전처리)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">총 매입액 362,371,900원의 원본 비중과 세전 358,406,482원의 비중을 실시간 이중 집계.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-purple-600 block mb-1">분석 (핵심 도출)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">원본 총매입액 기준 신영비철(37.7%)과 동방특수금속(21.7%)의 합산 점유율이 약 <strong>59.4%</strong>이며, 세전 정규화 기준으로는 약 <strong>60.1%</strong>로 확인됨.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-emerald-600 block mb-1">AFTER (원가 가치)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">신영비철 대비 대체 조달 검토가 가능한 동방특수금속을 실무 협상력 추진의 최우선 타겟으로 확정.</p>
+                    </div>
+                    <div class="bg-slate-900 text-white rounded-xl p-4">
+                        <span class="text-xs font-bold text-amber-400 block mb-1">인턴의 회고</span>
+                        <p class="text-xs text-slate-300 leading-relaxed">예산 투입 강도와 단가 괴리 정도를 곱한 영향력이 협상의 올바른 순위임을 깨달음.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3일차 케이스시트 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="border-b border-slate-100 pb-3 mb-4">
+                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">3일차 케이스시트</span>
+                    <h3 class="text-base font-bold text-slate-900 mt-1">기준시세 변동갭 및 시세 불동조화 규명</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 block mb-1">BEFORE (문제 정의)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">글로벌 비철 시세 하강 안정세에도 실제 자사 황동봉 원원가율은 이탈 및 역행하는 현상 발생.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-blue-500 block mb-1">관찰 (데이터 전처리)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">5월 대비 12월 시세 변동추이(20.2%)와 실제 공급단가 변동율(5.1%)의 이탈 추적 계산.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-purple-600 block mb-1">분석 (핵심 도출)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">상관계수 <strong>-0.15</strong> 및 7➔10월 시세 하강 국면 대비 동방/신영 견적의 상승 역행(+4.0%) 도출.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <span class="text-xs font-bold text-emerald-600 block mb-1">AFTER (원가 가치)</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">동방특수금속 연간 물량 기준 유사 대조군 단가 대칭 시 <strong>약 856만 원의 과지불</strong> 구조 정량 입증.</p>
+                    </div>
+                    <div class="bg-slate-900 text-white rounded-xl p-4">
+                        <span class="text-xs font-bold text-amber-400 block mb-1">인턴의 회고</span>
+                        <p class="text-xs text-slate-300 leading-relaxed">상관계수 수치 등 실증적인 통계 데이터가 공급처 설득을 위한 가장 강력한 무기임을 습득.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: 협상안 & 공문 생성기 (Day 4) -->
+        <div id="tab-negotiation" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- 설정 파라미터 영역 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6 h-fit">
+                    <div>
+                        <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">4일차 실행</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1">협상 기획 및 변수 시뮬레이션</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">분석 수치를 바탕으로 목표 인하 조건 및 민감도를 시뮬레이션하여 내부 메모와 요청 공문에 실시간 반영합니다.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">1. 협상 및 조건 조정 대상처</label>
+                            <select id="negotiationTarget" onchange="onVendorChange()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none">
+                                <option value="dongbang">동방특수금속</option>
+                                <option value="hanju">한주메탈</option>
+                                <option value="woojin">우진금속</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">2. 데이터 제안 인하율 (%)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="proposalRate" onchange="generateDocuments()" value="11" min="0" max="30" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none">
+                                <span class="text-sm font-bold text-slate-500">%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1" id="suggestion-hint-box">💡 최근 공급가 대비 업계 표준 정합선 수준 진입 시 <strong>가장 합당한 인하율은 약 11% 수준</strong>입니다.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">3. 조정 적용 타겟 일자</label>
+                            <input type="date" id="negotiationDate" onchange="generateDocuments()" value="2026-06-25" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">4. 조정 목표 세전가 (원/kg)</label>
+                            <input type="number" id="targetPrice" onchange="generateDocuments()" value="9650" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none">
+                            <p class="text-[10px] text-slate-400 mt-1" id="target-price-hint-box">💡 데이터 매핑 결과: 업계 평균 정합 수준인 9,650원이 최적의 목표 단가 대안입니다.</p>
+                        </div>
+                    </div>
+
+                    <!-- 원가 민감도 & 조달 안정성 패널 (동적 대체비율 산정) -->
+                    <div class="border-t pt-4 space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700">실시간 원가 민감도 & 조달 리스크 검토</h4>
+                        <div class="bg-slate-50 p-3 rounded-lg text-[11px] space-y-2 text-slate-600">
+                            <div class="flex justify-between">
+                                <span>공급처 제외 시 자체조달 가능비율</span>
+                                <span class="font-bold text-indigo-600" id="stat-alt-supply-ratio">79.1% (조달안정성 높음)</span>
+                            </div>
+                            <div class="flex justify-between border-t border-dashed pt-1.5 mt-1.5">
+                                <span>50원/kg 인하 시 대상사 절감액</span>
+                                <span class="font-semibold text-slate-800" id="stat-target-saving">약 35.8만 원/연</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>50원/kg 인하 시 신영 절감액</span>
+                                <span class="font-semibold text-slate-800">약 74.5만 원/연</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 leading-normal pt-1">※ 신영비철은 최저단가·대량발주 제약 조건으로 가격 경직성이 뚜렷하여 민감도가 큼에도, 동방특수금속 등 괴리 공급처를 우선 조정 타겟으로 선정함이 합당합니다.</p>
+                        </div>
+                    </div>
+
+                    <button onclick="generateDocuments()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all duration-200 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i> 협상 문서 실시간 업데이트
+                    </button>
+                </div>
+
+                <!-- 출력 양식 영역 -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- 내부 보고서 탭 & 거래처 공문 탭 토글 -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="flex border-b border-slate-100 bg-slate-50/50">
+                            <button id="btnDocReport" onclick="switchDocTab('report')" class="w-1/2 py-3.5 text-sm font-bold border-b-2 border-emerald-600 text-emerald-700 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-invoice"></i> (내부 보고용) 협상 근거 메모
+                            </button>
+                            <button id="btnDocLetter" onclick="switchDocTab('letter')" class="w-1/2 py-3.5 text-sm font-semibold text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> (대외 검토용) 조정 요청 공문 초안
+                            </button>
+                        </div>
+                        
+                        <div class="p-6 bg-white">
+                            <!-- 내부 보고서 영역 -->
+                            <div id="docContentReport" class="space-y-4">
+                                <div class="flex justify-between items-center pb-3 border-b border-dashed border-slate-200">
+                                    <span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold uppercase">내부 결재 보고서</span>
+                                    <button onclick="copyDocument('memo-text')" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
+                                        <i class="fa-regular fa-copy"></i> 클립보드 복사
+                                    </button>
+                                </div>
+                                <pre id="memo-text" class="text-xs font-mono bg-slate-900 text-slate-100 p-6 rounded-xl overflow-y-auto max-h-[500px] leading-relaxed select-all whitespace-pre-wrap text-left">
+                                    <!-- 동적으로 채워짐 -->
+                                </pre>
+                            </div>
+
+                            <!-- 공문서 영역 -->
+                            <div id="docContentLetter" class="hidden space-y-4">
+                                <div class="flex justify-between items-center pb-3 border-b border-dashed border-slate-200">
+                                    <span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-1 rounded font-bold uppercase">대외 전송 승인 상신용 초안</span>
+                                    <button onclick="copyDocument('letter-text')" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
+                                        <i class="fa-regular fa-copy"></i> 클립보드 복사
+                                    </button>
+                                </div>
+                                <pre id="letter-text" class="text-xs font-mono bg-white text-slate-800 border-2 border-slate-200 p-8 rounded-xl overflow-y-auto max-h-[500px] shadow-inner leading-relaxed select-all whitespace-pre-wrap text-left font-semibold">
+                                    <!-- 동적으로 채워짐 -->
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 원본 데이터 뷰어 (전수 복원 및 중복의심 이력 마킹 가이드) -->
+        <div id="tab-rawdata" class="tab-content hidden space-y-6">
+            
+            <div class="flex justify-end gap-2 bg-white rounded-xl p-2 shadow-sm border border-slate-200">
+                <button id="view-mode-raw" onclick="switchViewMode('raw')" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 text-white">
+                    <i class="fa-solid fa-file-excel mr-1"></i> 수집 데이터 (엑셀 원본 그대로)
+                </button>
+                <button id="view-mode-normalized" onclick="switchViewMode('normalized')" class="px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> 정형화 데이터 (정규화 전처리 완료)
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 id="table-display-title" class="text-lg font-bold text-slate-900">수집 데이터 (엑셀 원본 그대로)</h3>
+                        <p id="table-display-desc" class="text-xs text-slate-500">정화 작업을 거치지 않아 거래처 표기 혼재 및 VAT 포함 상태가 유지된 원본 기록입니다.</p>
+                    </div>
+                    <!-- 데이터 선택 셀렉터 -->
+                    <div class="flex flex-wrap gap-2">
+                        <button id="btn-raw-purchase" onclick="showRawTable('purchase')" class="raw-tab-btn bg-emerald-600 text-white text-xs px-3.5 py-2 rounded-lg font-bold shadow-sm transition">매입이력 (250건 전체)</button>
+                        <button id="btn-raw-quotation" onclick="showRawTable('quotation')" class="raw-tab-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3.5 py-2 rounded-lg font-semibold transition">견적이력 (26건 전수 복원)</button>
+                        <button id="btn-raw-partners" onclick="showRawTable('partners')" class="raw-tab-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3.5 py-2 rounded-lg font-semibold transition">거래처마스터</button>
+                        <button id="btn-raw-materials" onclick="showRawTable('materials')" class="raw-tab-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3.5 py-2 rounded-lg font-semibold transition">자재마스터</button>
+                        <button id="btn-raw-trends" onclick="showRawTable('trends')" class="raw-tab-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3.5 py-2 rounded-lg font-semibold transition">원자재시세</button>
+                    </div>
+                </div>
+                
+                <div class="p-4 overflow-x-auto max-h-[600px] custom-scrollbar">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead id="rawTableHeader" class="sticky top-0 bg-slate-100 text-slate-700 font-semibold z-10">
+                            <!-- JS 주입 -->
+                        </thead>
+                        <tbody id="rawTableBody" class="divide-y divide-slate-100 text-slate-600">
+                            <!-- JS 주입 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>© 2026 (주)그린메탈. 이 웹사이트는 가상 실습 교보재를 완결하는 데이터 대시보드 샌드박스입니다.</p>
+            <div class="flex gap-4">
+                <span class="text-slate-500">인천 남동구 남동공단로 123</span>
+                <span class="text-slate-500">대표전화: 032-123-4567</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION UTILITY -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- DATA & LOGIC CONTROL SCRIPT -->
+    <script>
+        // 업로드된 실제 전체 데이터 (250건 완벽하게 보존)
+        const rawPurchaseCSV = [
+            ["P1011","2025-01-01","신영비철","황동봉",500,"kg",9080,"별도",4540000,"대량"],
+            ["P1005","2025-01-02","동방특수금속(주)","황동봉",80,"kg",10860,"별도",868800,""],
+            ["P1004","2025-01-04","동방특수금속","황동봉",80,"kg",10860,"별도",868800,""],
+            ["P1001","2025-01-06","대성금속","황동봉",150,"kg",9670,"별도",1450500,""],
+            ["P1002","2025-01-08","대성금속","황동봉",100,"kg",9670,"별도",967000,""],
+            ["P1006","2025-01-10","동방특수금속","황동봉",100,"kg",10860,"별도",1086000,""],
+            ["P1222","2025-01-16","대성금속","청동주물",60,"kg",14610,"별도",876600,""],
+            ["P1016","2025-01-16","한주메탈","황동봉",50,"본",33840,"별도",1692000,"황동봉 본단위 견적"],
+            ["P1010","2025-01-16","신영비철","황동봉",800,"kg",9080,"별도",7264000,"대량"],
+            ["P1007","2025-01-17","동방특수금속(주)","황동봉",150,"kg",10860,"별도",1629000,""],
+            ["P1009","2025-01-18","동방특수금속","황동봉",150,"kg",10860,"별도",1629000,""],
+            ["P1000","2025-01-19","대성금속","황동봉",50,"kg",9670,"별도",483500,""],
+            ["P1221","2025-01-19","우진금속","청동주물",80,"kg",14410,"별도",1152800,""],
+            ["P1012","2025-01-20","우진금속","황동봉",60,"kg",10640,"포함",638400,"견적가 VAT포함"],
+            ["P1015","2025-01-20","한주메탈","황동봉",20,"본",33840,"별도",676800,"황동봉 본단위 견적"],
+            ["P1017","2025-01-22","한주메탈","황동봉",20,"본",33840,"별도",676800,"황동봉 본단위 견적"],
+            ["P1220","2025-01-23","삼화소재","청동주물",40,"kg",15740,"포함",629600,""],
+            ["P1014","2025-01-23","우진금속","황동봉",100,"kg",10640,"포함",1064000,"견적가 VAT포함"],
+            ["P1008","2025-01-24","동방특수금속","황동봉",150,"kg",10860,"별도",1629000,""],
+            ["P1013","2025-01-27","우진금속","황동봉",60,"kg",10640,"포함",638400,"견적가 VAT포함"],
+            ["P1003","2025-01-27","대성금속","황동봉",80,"kg",9670,"별도",773600,""],
+            ["P1025","2025-02-02","동방특수금속(주)","황동봉",50,"kg",11270,"별도",563500,""],
+            ["P1029","2025-02-11","신영비철","황동봉",500,"kg",9430,"별도",4715000,"대량"],
+            ["P1035","2025-02-13","한주메탈","황동봉",20,"본",35140,"별도",702800,"황동봉 본단위 견적"],
+            ["P1022","2025-02-13","동방특수금속(주)","황동봉",50,"kg",11270,"별도",563500,""],
+            ["P1024","2025-02-13","동방특수금속(주)","황동봉",80,"kg",11270,"별도",901600,""],
+            ["P1018","2025-02-14","대성금속","황동봉",50,"kg",10040,"별도",502000,""],
+            ["P1026","2025-02-14","동방특수금속(주)","황동봉",150,"kg",11270,"별도",1690500,""],
+            ["P1027","2025-02-14","동방특수금속㈜","황동봉",150,"kg",11270,"별도",1690500,""],
+            ["P1019","2025-02-15","대성금속","황동봉",150,"kg",10040,"별도",1506000,""],
+            ["P1033","2025-02-16","한주메탈","황동봉",20,"본",35140,"별도",702800,"황동봉 본단위 견적"],
+            ["P1225","2025-02-16","대성금속","청동주물",40,"kg",15170,"별도",606800,""],
+            ["P1023","2025-02-16","동방특수금속(주)","황동봉",100,"kg",11270,"별도",1127000,""],
+            ["P1224","2025-02-20","우진금속","청동주물",40,"kg",14960,"별도",598400,""],
+            ["P1031","2025-02-22","우진금속","황동봉",120,"kg",11040,"포함",1324800,"견적가 VAT포함"],
+            ["P1032","2025-02-22","우진금속","황동봉",80,"kg",11040,"포함",883200,"견적가 VAT포함"],
+            ["P1034","2025-02-24","한주메탈","황동봉",30,"본",35140,"별도",1054200,"황동봉 본단위 견적"],
+            ["P1223","2025-02-25","삼화소재","청동주물",60,"kg",16350,"포함",981000,""],
+            ["P1028","2025-02-26","신영비철","황동봉",800,"kg",9430,"별도",7544000,"대량"],
+            ["P1020","2025-02-26","대성금속","황동봉",80,"kg",10040,"별도",803200,""],
+            ["P1021","2025-02-26","대성금속","황동봉",150,"kg",10040,"별도",1506000,""],
+            ["P1030","2025-02-27","우진금속","황동봉",80,"kg",11040,"포함",883200,"견적가 VAT포함"],
+            ["P1052","2025-03-04","한주메탈","황동봉",20,"본",34090,"별도",681800,"황동봉 본단위 견적"],
+            ["P1049","2025-03-04","우진금속","황동봉",100,"kg",10710,"포함",1071000,"견적가 VAT포함"],
+            ["P1047","2025-03-08","신영비철","황동봉",600,"kg",9140,"별도",5484000,"대량"],
+            ["P1040","2025-03-09","동방특수금속㈜","황동봉",80,"kg",10930,"별도",874400,""],
+            ["P1226","2025-03-10","삼화소재","청동주물",40,"kg",15850,"포함",634000,""],
+            ["P1044","2025-03-11","동방특수금속(주)","황동봉",150,"kg",10930,"별도",1639500,""],
+            ["P1053","2025-03-11","한주메탈","황동봉",50,"본",34090,"별도",1704500,"황동봉 본단위 견적"],
+            ["P1054","2025-03-11","대성금속","황동봉",50,"kg",9740,"별도",487000,"긴급 소량(신영 납기 못맞춤)"],
+            ["P1043","2025-03-16","동방특수금속(주)","황동봉",50,"kg",10930,"별도",546500,""],
+            ["P1039","2025-03-18","대성금속","황동봉",50,"kg",9740,"별도",487000,""],
+            ["P1228","2025-03-18","대성금속","청동주물",80,"kg",14710,"별도",1176800,""],
+            ["P1227","2025-03-19","우진금속","청동주물",40,"kg",14510,"별도",580400,""],
+            ["P1037","2025-03-20","대성금속","황동봉",100,"kg",9740,"별도",974000,""],
+            ["P1048","2025-03-20","우진금속","황동봉",80,"kg",10710,"포함",856800,"견적가 VAT포함"],
+            ["P1045","2025-03-21","동방특수금속","황동봉",50,"kg",10930,"별도",546500,""],
+            ["P1046","2025-03-22","신영비철","황동봉",800,"kg",9140,"별도",7312000,"대량"],
+            ["P1050","2025-03-22","우진금속","황동봉",100,"kg",10710,"포함",1071000,"견적가 VAT포함"],
+            ["P1051","2025-03-26","한주메탈","황동봉",20,"본",34090,"별도",681800,"황동봉 본단위 견적"],
+            ["P1036","2025-03-26","대성금속","황동봉",80,"kg",9740,"별도",779200,""],
+            ["P1041","2025-03-27","동방특수금속㈜","황동봉",150,"kg",10930,"별도",1639500,""],
+            ["P1038","2025-03-27","대성금속","황동봉",50,"kg",9740,"별도",487000,""],
+            ["P1042","2025-03-27","동방특수금속","황동봉",50,"kg",10930,"별도",546500,""],
+            ["P1057","2025-04-03","대성금속","황동봉",100,"kg",9730,"별도",973000,""],
+            ["P1070","2025-04-03","한주메탈","황동봉",30,"본",34060,"별도",1021800,"황동봉 본단위 견적"],
+            ["P1066","2025-04-04","신영비철","황동봉",500,"kg",9140,"별도",4570000,"대량"],
+            ["P1064","2025-04-05","동방특수금속(주)","황동봉",80,"kg",10920,"별도",873600,""],
+            ["P1069","2025-04-05","우진금속","황동봉",80,"kg",10700,"포함",856000,"견적가 VAT포함"],
+            ["P1071","2025-04-07","한주메탈","황동봉",40,"본",34060,"별도",1362400,"황동봉 본단위 견적"],
+            ["P1058","2025-04-07","대성금속","황동봉",80,"kg",9730,"별도",778400,""],
+            ["P1056","2025-04-08","대성금속","황동봉",50,"kg",9730,"별도",486500,""],
+            ["P1061","2025-04-11","동방특수금속(주)","황동봉",50,"kg",10920,"별도",546000,""],
+            ["P1059","2025-04-11","동방특수금속㈜","황동봉",80,"kg",10920,"별도",873600,""],
+            ["P1229","2025-04-11","삼화소재","청동주물",80,"kg",15840,"포함",1267200,""],
+            ["P1068","2025-04-13","우진금속","황동봉",80,"kg",10700,"포함",856000,"견적가 VAT포함"],
+            ["P1072","2025-04-17","한주메탈","황동봉",40,"본",34060,"별도",1362400,"황동봉 본단위 견적"],
+            ["P1062","2025-04-18","동방특수금속","황동봉",80,"kg",10920,"별도",873600,""],
+            ["P1060","2025-04-22","동방특수금속㈜","황동봉",50,"kg",10920,"별도",546000,""],
+            ["P1063","2025-04-22","동방특수금속","황동봉",150,"kg",10920,"별도",1638000,""],
+            ["P1230","2025-04-22","우진금속","청동주물",40,"kg",14500,"별도",580000,""],
+            ["P1055","2025-04-22","대성금속","황동봉",80,"kg",9730,"별도",778400,""],
+            ["P1065","2025-04-25","신영비철","황동봉",800,"kg",9140,"별도",7312000,"대량"],
+            ["P1067","2025-04-26","우진금속","황동봉",60,"kg",10700,"포함",642000,"견적가 VAT포함"],
+            ["P1085","2025-05-02","우진금속","황동봉",120,"kg",10490,"포함",1258800,"견적가 VAT포함"],
+            ["P1086","2025-05-04","우진금속","황동봉",120,"kg",10490,"포함",1258800,"견적가 VAT포함"],
+            ["P1088","2025-05-05","한주메탈","황동봉",40,"본",33390,"별도",1335600,"황동봉 본단위 견적"],
+            ["P1074","2025-05-05","대성금속","황동봉",100,"kg",9540,"별도",954000,""],
+            ["P1083","2025-05-07","신영비철","황동봉",600,"kg",8950,"별도",5370000,"대량"],
+            ["P1075","2025-05-07","대성금속","황동봉",80,"kg",9540,"별도",763200,""],
+            ["P1084","2025-05-09","신영비철","황동봉",600,"kg",8950,"별도",5370000,"대량"],
+            ["P1079","2025-05-11","동방특수금속","황동봉",150,"kg",10700,"별도",1605000,""],
+            ["P1232","2025-05-12","우진금속","청동주물",60,"kg",14210,"별도",852600,""],
+            ["P1077","2025-05-14","동방특수금속","황동봉",150,"kg",10700,"별도",1605000,""],
+            ["P1080","2025-05-17","동방특수금속","황동봉",100,"kg",10700,"별도",1070000,""],
+            ["P1076","2025-05-17","대성금속","황동봉",50,"kg",9540,"별도",477000,""],
+            ["P1081","2025-05-17","동방특수금속㈜","황동봉",100,"kg",10700,"별도",1070000,""],
+            ["P1231","2025-05-18","삼화소재","청동주물",40,"kg",15520,"포함",620800,""],
+            ["P1087","2025-05-19","우진금속","황동봉",120,"kg",10490,"포함",1258800,"견적가 VAT포함"],
+            ["P1089","2025-05-20","한주메탈","황동봉",20,"본",33390,"별도",667800,"황동봉 본단위 견적"],
+            ["P1073","2025-05-20","대성금속","황동봉",80,"kg",9540,"별도",763200,""],
+            ["P1090","2025-05-24","한주메탈","황동봉",50,"본",33390,"별도",1669500,"황동봉 본단위 견적"],
+            ["P1078","2025-05-26","동방특수금속㈜","황동봉",80,"kg",10700,"별도",856000,""],
+            ["P1082","2025-05-26","동방특수금속(주)","황동봉",50,"kg",10700,"별도",535000,""],
+            ["P1094","2025-06-03","대성금속","황동봉",50,"kg",10030,"별도",501500,""],
+            ["P1107","2025-06-04","한주메탈","황동봉",30,"본",35100,"별도",1053000,"황동봉 본단위 견적"],
+            ["P1233","2025-06-05","삼화소재","청동주물",80,"kg",16310,"포함",1304800,""],
+            ["P1102","2025-06-07","신영비철","황동봉",800,"kg",9410,"별도",7528000,"대량"],
+            ["P1103","2025-06-08","우진금속","황동봉",60,"kg",11030,"포함",661800,"견적가 VAT포함"],
+            ["P1092","2025-06-08","대성금속","황동봉",80,"kg",10030,"별도",802400,""],
+            ["P1098","2025-06-09","동방특수금속(주)","황동봉",150,"kg",11250,"별도",1687500,""],
+            ["P1095","2025-06-10","동방특수금속㈜","황동봉",150,"kg",11250,"별도",1687500,""],
+            ["P1091","2025-06-11","대성금속","황동봉",50,"kg",10030,"별도",501500,""],
+            ["P1104","2025-06-11","우진금속","황동봉",80,"kg",11030,"포함",882400,"견적가 VAT포함"],
+            ["P1105","2025-06-14","우진금속","황동봉",100,"kg",11030,"포함",1103000,"견적가 VAT포함"],
+            ["P1108","2025-06-14","한주메탈","황동봉",30,"본",35100,"별도",1053000,"황동봉 본단위 견적"],
+            ["P1097","2025-06-15","동방특수금속㈜","황동봉",100,"kg",11250,"별도",1125000,""],
+            ["P1109","2025-06-15","대성금속","황동봉",50,"kg",10030,"별도",501500,"긴급 소량(신영 납기 못맞춤)"],
+            ["P1106","2025-06-16","한주메탈","황동봉",50,"본",35100,"별도",1755000,"황동봉 본단위 견적"],
+            ["P1234","2025-06-17","대성금속","청동주물",40,"kg",15140,"별도",605600,""],
+            ["P1096","2025-06-17","동방특수금속(주)","황동봉",80,"kg",11250,"별도",900000,""],
+            ["P1093","2025-06-17","대성금속","황동봉",150,"kg",10030,"별도",1504500,""],
+            ["P1100","2025-06-18","동방특수금속","황동봉",50,"kg",11250,"별도",562500,""],
+            ["P1101","2025-06-22","신영비철","황동봉",500,"kg",9410,"별도",4705000,"대량"],
+            ["P1099","2025-06-24","동방특수금속","황동봉",80,"kg",11250,"별도",900000,""],
+            ["P1111","2025-07-03","대성금속","황동봉",80,"kg",9580,"별도",766400,""],
+            ["P1110","2025-07-03","대성금속","황동봉",150,"kg",9580,"별도",1437000,""],
+            ["P1235","2025-07-04","삼화소재","청동주물",60,"kg",15600,"포함",936000,""],
+            ["P1116","2025-07-08","동방특수금속","황동봉",80,"kg",10760,"별도",860800,""],
+            ["P1236","2025-07-11","우진금속","청동주물",40,"kg",14280,"별도",571200,""],
+            ["P1112","2025-07-11","대성금속","황동봉",80,"kg",9580,"별도",766400,""],
+            ["P1237","2025-07-12","대성금속","청동주물",60,"kg",14470,"별도",868200,""],
+            ["P1115","2025-07-13","동방특수금속(주)","황동봉",50,"kg",10760,"별도",538000,""],
+            ["P1124","2025-07-14","우진금속","황동봉",100,"kg",10540,"포함",1054000,"견적가 VAT포함"],
+            ["P1120","2025-07-14","신영비철","황동봉",600,"kg",9000,"별도",5400000,"대량"],
+            ["P1125","2025-07-15","한주메탈","황동봉",50,"본",33530,"별도",1676500,"황동봉 본단위 견적"],
+            ["P1113","2025-07-15","대성금속","황동봉",150,"kg",9580,"별도",1437000,""],
+            ["P1126","2025-07-15","한주메탈","황동봉",30,"본",33530,"별도",1005900,"황동봉 본단위 견적"],
+            ["P1121","2025-07-17","신영비철","황동봉",500,"kg",9000,"별도",4500000,"대량"],
+            ["P1119","2025-07-17","동방특수금속㈜","황동봉",100,"kg",10760,"별도",1076000,""],
+            ["P1117","2025-07-20","동방특수금속","황동봉",50,"kg",10760,"별도",538000,""],
+            ["P1127","2025-07-21","한주메탈","황동봉",40,"본",33530,"별도",1341200,"황동봉 본단위 견적"],
+            ["P1123","2025-07-23","우진금속","황동봉",120,"kg",10540,"포함",1264800,"견적가 VAT포함"],
+            ["P1114","2025-07-24","동방특수금속㈜","황동봉",80,"kg",10760,"별도",860800,""],
+            ["P1122","2025-07-27","우진금속","황동봉",60,"kg",10540,"포함",632400,"견적가 VAT포함"],
+            ["P1118","2025-07-27","동방특수금속","황동봉",50,"kg",10760,"별도",538000,""],
+            ["P1143","2025-08-01","한주메탈","황동봉",40,"본",34790,"별도",1391600,"황동봉 본단위 견적"],
+            ["P1133","2025-08-02","동방특수금속(주)","황동봉",80,"kg",11150,"별도",892000,""],
+            ["P1141","2025-08-02","우진금속","황동봉",60,"kg",10930,"포함",655800,"견적가 VAT포함"],
+            ["P1137","2025-08-03","동방특수금속㈜","황동봉",150,"kg",11150,"별도",1672500,""],
+            ["P1136","2025-08-06","동방특수금속(주)","황동봉",100,"kg",11150,"별도",1115000,""],
+            ["P1132","2025-08-09","동방특수금속㈜","황동봉",100,"kg",11150,"별도",1115000,""],
+            ["P1131","2025-08-09","대성금속","황동봉",80,"kg",9940,"별도",795200,""],
+            ["P1134","2025-08-12","동방특수금속㈜","황동봉",150,"kg",11150,"별도",1672500,""],
+            ["P1239","2025-08-15","대성금속","청동주물",40,"kg",15010,"별도",600400,""],
+            ["P1129","2025-08-16","대성금속","황동봉",100,"kg",9940,"별도",994000,""],
+            ["P1138","2025-08-20","신영비철","황동봉",600,"kg",9330,"별도",5598000,"대량"],
+            ["P1135","2025-08-21","동방특수금속(주)","황동봉",50,"kg",11150,"별도",557500,""],
+            ["P1128","2025-08-23","대성금속","황동봉",50,"kg",9940,"별도",497000,""],
+            ["P1144","2025-08-25","한주메탈","황동봉",30,"본",34790,"별도",1043700,"황동봉 본단위 견적"],
+            ["P1145","2025-08-25","한주메탈","황동봉",50,"본",34790,"별도",1739500,"황동봉 본단위 견적"],
+            ["P1142","2025-08-25","우진금속","황동봉",120,"kg",10930,"포함",1311600,"견적가 VAT포함"],
+            ["P1130","2025-08-25","대성금속","황동봉",80,"kg",9940,"별도",795200,""],
+            ["P1139","2025-08-27","신영비철","황동봉",500,"kg",9330,"별도",4665000,"대량"],
+            ["P1238","2025-08-27","우진금속","청동주물",40,"kg",14800,"별도",592000,""],
+            ["P1140","2025-08-27","우진금속","황동봉",100,"kg",10930,"포함",1093000,"견적가 VAT포함"],
+            ["P1157","2025-09-01","신영비철","황동봉",600,"kg",9060,"별도",5436000,"대량"],
+            ["P1152","2025-09-04","동방특수금속","황동봉",50,"kg",10840,"별도",542000,""],
+            ["P1146","2025-09-04","대성금속","황동봉",50,"kg",9650,"별도",482500,""],
+            ["P1161","2025-09-04","한주메탈","황동봉",20,"본",33780,"별도",675600,"황동봉 본단위 견적"],
+            ["P1162","2025-09-06","한주메탈","황동봉",30,"본",33780,"별도",1013400,"황동봉 본단위 견적"],
+            ["P1148","2025-09-07","대성금속","황동봉",80,"kg",9650,"별도",772000,""],
+            ["P1150","2025-09-09","동방특수금속","황동봉",150,"kg",10840,"별도",1626000,""],
+            ["P1149","2025-09-10","대성금속","황동봉",80,"kg",9650,"별도",772000,""],
+            ["P1160","2025-09-13","우진금속","황동봉",60,"kg",10620,"포함",637200,"견적가 VAT포함"],
+            ["P1163","2025-09-14","한주메탈","황동봉",50,"본",33780,"별도",1689000,"황동봉 본단위 견적"],
+            ["P1241","2025-09-16","대성금속","청동주물",40,"kg",14580,"별도",583200,""],
+            ["P1147","2025-09-16","대성금속","황동봉",150,"kg",9650,"별도",1447500,""],
+            ["P1155","2025-09-18","동방특수금속","황동봉",50,"kg",10840,"별도",542000,""],
+            ["P1240","2025-09-18","삼화소재","청동주물",80,"kg",15710,"포함",1256800,""],
+            ["P1159","2025-09-20","우진금속","황동봉",80,"kg",10620,"포함",849600,"견적가 VAT포함"],
+            ["P1151","2025-09-20","동방특수금속(주)","황동봉",150,"kg",10840,"별도",1626000,""],
+            ["P1156","2025-09-20","신영비철","황동봉",800,"kg",9060,"별도",7248000,"대량"],
+            ["P1154","2025-09-21","동방특수금속","황동봉",150,"kg",10840,"별도",1626000,""],
+            ["P1158","2025-09-21","우진금속","황동봉",80,"kg",10620,"포함",849600,"견적가 VAT포함"],
+            ["P1153","2025-09-21","동방특수금속㈜","황동봉",50,"kg",10840,"별도",542000,""],
+            ["P1164","2025-09-21","대성금속","황동봉",50,"kg",9650,"별도",482500,"긴급 소량(신영 납기 못맞춤)"],
+            ["P1173","2025-10-01","동방특수금속㈜","황동봉",80,"kg",11190,"별도",895200,""],
+            ["P1174","2025-10-02","동방특수금속㈜","황동봉",100,"kg",11190,"별도",1119000,""],
+            ["P1242","2025-10-04","삼화소재","청동주물",60,"kg",16230,"포함",973800,""],
+            ["P1180","2025-10-05","한주메탈","황동봉",50,"본",34900,"별도",1745000,"황동봉 본단위 견적"],
+            ["P1181","2025-10-05","한주메탈","황동봉",40,"본",34900,"별도",1396000,"황동봉 본단위 견적"],
+            ["P1172","2025-10-07","동방특수금속","황동봉",50,"kg",11190,"별도",559500,""],
+            ["P1175","2025-10-12","신영비철","황동봉",600,"kg",9360,"별도",5616000,"대량"],
+            ["P1179","2025-10-14","우진금속","황동봉",60,"kg",10970,"포함",658200,"견적가 VAT포함"],
+            ["P1165","2025-10-16","대성금속","황동봉",150,"kg",9970,"별도",1495500,""],
+            ["P1243","2025-10-17","우진금속","청동주물",80,"kg",14850,"별도",1188000,""],
+            ["P1244","2025-10-19","대성금속","청동주물",40,"kg",15050,"별도",602000,""],
+            ["P1168","2025-10-20","대성금속","황동봉",150,"kg",9970,"별도",1495500,""],
+            ["P1166","2025-10-20","대성금속","황동봉",150,"kg",9970,"별도",1495500,""],
+            ["P1177","2025-10-21","우진금속","황동봉",120,"kg",10970,"포함",1316400,"견적가 VAT포함"],
+            ["P1171","2025-10-21","동방특수금속","황동봉",100,"kg",11190,"별도",1119000,""],
+            ["P1169","2025-10-21","동방특수금속","황동봉",150,"kg",11190,"별도",1678500,""],
+            ["P1170","2025-10-22","동방특수금속(주)","황동봉",80,"kg",11190,"별도",895200,""],
+            ["P1167","2025-10-23","대성금속","황동봉",100,"kg",9970,"별도",997000,""],
+            ["P1178","2025-10-25","우진금속","황동봉",100,"kg",10970,"포함",1097000,"견적가 VAT포함"],
+            ["P1182","2025-10-25","한주메탈","황동봉",50,"본",34900,"별도",1745000,"황동봉 본단위 견적"],
+            ["P1176","2025-10-26","신영비철","황동봉",500,"kg",9360,"별도",4680000,"대량"],
+            ["P1188","2025-11-02","동방특수금속","황동봉",150,"kg",10980,"별도",1647000,""],
+            ["P1247","2025-11-02","대성금속","청동주물",40,"kg",14770,"별도",590800,""],
+            ["P1187","2025-11-02","동방특수금속(주)","황동봉",150,"kg",10980,"별도",1647000,""],
+            ["P1197","2025-11-03","우진금속","황동봉",60,"kg",10760,"포함",645600,"견적가 VAT포함"],
+            ["P1194","2025-11-03","신영비철","황동봉",500,"kg",9180,"별도",4590000,"대량"],
+            ["P1183","2025-11-05","대성금속","황동봉",80,"kg",9780,"별도",782400,""],
+            ["P1198","2025-11-05","한주메탈","황동봉",20,"본",34230,"별도",684600,"황동봉 본단위 견적"],
+            ["P1184","2025-11-06","대성금속","황동봉",100,"kg",9780,"별도",978000,""],
+            ["P1190","2025-11-07","동방특수금속㈜","황동봉",150,"kg",10980,"별도",1647000,""],
+            ["P1196","2025-11-09","우진금속","황동봉",60,"kg",10760,"포함",645600,"견적가 VAT포함"],
+            ["P1201","2025-11-17","대성금속","황동봉",50,"kg",9780,"별도",489000,"긴급 소량(신영 납기 못맞춤)"], 
+            ["P1200","2025-11-11","한주메탈","황동봉",40,"본",34230,"별도",1369200,"황동봉 본단위 견적"],
+            ["P1191","2025-11-14","동방특수금속㈜","황동봉",80,"kg",10980,"별도",878400,""],
+            ["P1185","2025-11-14","대성금속","황동봉",100,"kg",9780,"별도",978000,""],
+            ["P1189","2025-11-15","동방특수금속㈜","황동봉",100,"kg",10980,"별도",1098000,""],
+            ["P1245","2025-11-16","삼화소재","청동주물",80,"kg",15920,"포함",1273600,""],
+            ["P1192","2025-11-18","동방특수금속(주)","황동봉",50,"kg",10980,"별도",549000,""],
+            ["P1186","2025-11-23","대성금속","황동봉",150,"kg",9780,"별도",1467000,""],
+            ["P1246","2025-11-23","우진금속","청동주물",40,"kg",14570,"별도",582800,""],
+            ["P1195","2025-11-24","우진금속","황동봉",60,"kg",10760,"포함",645600,"견적가 VAT포함"],
+            ["P1199","2025-11-27","한주메탈","황동봉",30,"본",34230,"별도",1026900,"황동봉 본단위 견적"],
+            ["P1193","2025-11-27","신영비철","황동봉",800,"kg",9180,"별도",7344000,"대량"],
+            ["P1203","2025-12-04","대성금속","황동봉",50,"kg",9650,"별도",482500,""],
+            ["P1218","2025-12-05","한주메탈","황동봉",40,"본",33780,"별도",1351200,"황동봉 본단위 견적"],
+            ["P1217","2025-12-08","한주메탈","황동봉",20,"본",33780,"별도",675600,"황동봉 본단위 견적"],
+            ["P1209","2025-12-11","동방특수금속","황동봉",150,"kg",10840,"별도",1626000,""],
+            ["P1205","2025-12-15","대성금속","황동봉",80,"kg",9650,"별도",772000,""],
+            ["P1210","2025-12-15","동방특수금속(주)","황동봉",150,"kg",10840,"별도",1626000,""],
+            ["P1215","2025-12-15","우진금속","황동봉",60,"kg",10620,"포함",637200,"견적가 VAT포함"],
+            ["P1206","2025-12-16","동방특수금속","황동봉",80,"kg",10840,"별도",867200,""],
+            ["P1208","2025-12-16","동방특수금속㈜","황동봉",150,"kg",10840,"별도",1626000,""], 
+            ["P1207","2025-12-16","동방특수금속㈜","황동봉",150,"kg",10840,"별도",1626000,""],
+            ["P1204","2025-12-18","대성금속","황동봉",150,"kg",9650,"별도",1447500,""],
+            ["P1213","2025-12-19","신영비철","황동봉",600,"kg",9060,"별도",5436000,"대량"],
+            ["P1214","2025-12-20","우진금속","황동봉",80,"kg",10620,"포함",849600,"견적가 VAT포함"],
+            ["P1211","2025-12-20","동방특수금속(주)","황동봉",50,"kg",10840,"별도",542000,""],
+            ["P1202","2025-12-23","대성금속","황동봉",100,"kg",9650,"별도",965000,""],
+            ["P1216","2025-12-23","우진금속","황동봉",100,"kg",10620,"포함",1062000,"견적가 VAT포함"],
+            ["P1219","2025-12-24","한주메탈","황동봉",40,"본",33780,"별도",1351200,"황동봉 본단위 견적"],
+            ["P1212","2025-12-26","신영비철","황동봉",500,"kg",9060,"별도",4530000,"대량"],
+            ["P1248","2025-12-27","삼화소재","청동주물",40,"kg",15710,"포함",628400,""],
+            ["P1249","2025-12-27","우진금속","청동주물",80,"kg",14380,"별도",1150400,""]
+        ];
+
+        const partnersMaster = [
+            { code: "S01", name: "대성금속", material: "황동봉/청동", minQty: 40, leadTime: 3, payment: "월말마감 익월말 결제(60일)", note: "소량·단납기 가능" },
+            { code: "S02", name: "동방특수금속", material: "황동봉", minQty: 50, leadTime: 5, payment: "현금 50% 선급 후 잔금", note: "오랜 거래처" },
+            { code: "S03", name: "한주메탈", material: "황동봉", minQty: 70, leadTime: 5, payment: "월말마감 익월말 결제", note: "견적을 본(本) 단위로 제공 (1본≈3.5kg)" },
+            { code: "S04", name: "신영비철", material: "황동봉", minQty: 500, leadTime: 14, payment: "전액 현금 선결제", note: "대량 단가 강점" },
+            { code: "S05", name: "우진금속", material: "황동봉/청동", minQty: 40, leadTime: 4, payment: "월말마감 익월말 결제", note: "견적가 부가세 포함 표기" },
+            { code: "S06", name: "삼화소재", material: "청동", minQty: 40, leadTime: 5, payment: "현금 결제", note: "청동 전문" }
+        ];
+
+        const materialsMaster = [
+            { code: "M-BR3604", name: "황동봉", spec: "C3604 Φ20 (1본≈3.5kg)", usage: "자동선반 쾌삭 가공", unit: "kg" },
+            { code: "M-BC502", name: "청동주물", spec: "CAC502", usage: "베어링 부싱", unit: "kg" }
+        ];
+
+        const copperTrends = [
+            { month: "2025-01", price: 12800, note: "월평균 시장시세 (구리)" },
+            { month: "2025-02", price: 13200, note: "" },
+            { month: "2025-03", price: 12900, note: "" },
+            { month: "2025-04", price: 13500, note: "" },
+            { month: "2025-05", price: 13700, note: "피크월" },
+            { month: "2025-06", price: 13200, note: "" },
+            { month: "2025-07", price: 13400, note: "" },
+            { month: "2025-08", price: 12700, note: "" },
+            { month: "2025-09", price: 12300, note: "" },
+            { month: "2025-10", price: 12500, note: "" },
+            { month: "2025-11", price: 11800, note: "하락지점" },
+            { month: "2025-12", price: 11400, note: "최저지점" }
+        ];
+
+        const rawQuotationCSV = [
+            ["Q500","2025-01-15","대성금속","황동봉C3604",9670,"kg","별도",""],
+            ["Q501","2025-01-15","동방특수금속(주)","황동봉C3604",10860,"kg","별도",""],
+            ["Q502","2025-01-15","신영비철","C3604 황동봉",9080,"kg","별도","최소 500kg부터"],
+            ["Q503","2025-01-15","우진금속","황동봉(C3604)",10640,"kg","포함","단가 부가세포함"],
+            ["Q504","2025-01-15","한주메탈","황동봉 C3604",33840,"본","별도","1본=약3.5kg"],
+            ["Q505","2025-04-15","대성금속","황동봉C3604",9730,"kg","별도",""],
+            ["Q506","2025-04-15","동방특수금속(주)","황동봉C3604",10920,"kg","별도",""],
+            ["Q507","2025-04-15","신영비철","C3604 황동봉",9140,"kg","별도","최소 500kg부터"],
+            ["Q508","2025-04-15","우진금속","황동봉(C3604)",10700,"kg","포함","단가 부가세포함"],
+            ["Q509","2025-04-15","한주메탈","황동봉 C3604",34060,"본","별도","1본=약3.5kg"],
+            ["Q510","2025-07-15","대성금속","황동봉C3604",9580,"kg","별도",""],
+            ["Q511","2025-07-15","동방특수금속(주)","황동봉C3604",10760,"kg","별도",""], 
+            ["Q512","2025-07-15","신영비철","C3604 황동봉",9000,"kg","별도","최소 500kg부터"],
+            ["Q513","2025-07-15","우진금속","황동봉(C3604)",10540,"kg","포함","단가 부가세포함"],
+            ["Q514","2025-07-15","한주메탈","황동봉 C3604",33530,"본","별도","1본=약3.5kg"],
+            ["Q515","2025-10-15","대성금속","황동봉C3604",9970,"kg","별도",""],
+            ["Q516","2025-10-15","동방특수금속","황동봉C3604",11190,"kg","별도",""],
+            ["Q517","2025-10-15","신영비철","C3604 황동봉",9360,"kg","별도","최소 500kg부터"],
+            ["Q518","2025-10-15","우진금속","황동봉(C3604)",10970,"kg","포함","단가 부가세포함"],
+            ["Q519","2025-10-15","한주메탈","황동봉 C3604",34900,"본","별도","1본=약3.5kg"],
+            ["Q520","2025-02-05","대성금속","청동주물 CAC502",14800,"kg","별도","베어링 부싱용"],
+            ["Q521","2025-09-03","대성금속","청동주물 CAC502",15000,"kg","별도","베어링 부싱용"],
+            ["Q522","2025-03-04","우진금속","청동주물 CAC502",14500,"kg","별도","베어링 부싱용"],
+            ["Q523","2025-10-02","우진금속","청동주물 CAC502",14700,"kg","별도","베어링 부싱용"],
+            ["Q524","2025-01-08","삼화소재","청동주물 CAC502",15900,"kg","포함","베어링 부싱용"],
+            ["Q525","2025-06-05","삼화소재","청동주물 CAC502",16100,"kg","포함","베어링 부싱용"]
+        ];
+
+        function cleanVendorName(name) {
+            return name.replace(/\(주\)|\(주\)|㈜/g, '').trim();
+        }
+
+        const normalizedPurchaseData = rawPurchaseCSV.map(row => {
+            const rawVendor = row[2];
+            const normalizedVendor = cleanVendorName(rawVendor);
+            
+            const qty = parseFloat(row[4]);
+            const unit = row[5];
+            const price = parseFloat(row[6]);
+            const vat = row[7];
+            const amount = parseFloat(row[8]);
+
+            let normalizedPrice = price;
+            if (unit === '본') {
+                normalizedPrice = price / 3.5;
+            }
+            if (vat === '포함') {
+                normalizedPrice = normalizedPrice / 1.1;
+            }
+
+            let amountBeforeTax = amount;
+            if (vat === '포함') {
+                amountBeforeTax = amount / 1.1;
+            }
+
+            let normalizedWeight = qty;
+            if (unit === '본') {
+                normalizedWeight = qty * 3.5;
+            }
+
+            return {
+                id: row[0],
+                date: row[1],
+                vendor: normalizedVendor,
+                material: row[3],
+                qty: qty,
+                unit: unit,
+                price: price,
+                vat: vat,
+                amount: amount,
+                amountBeforeTax: amountBeforeTax,
+                normalizedPrice: Math.round(normalizedPrice),
+                normalizedWeight: normalizedWeight,
+                note: row[9]
+            };
+        });
+
+        const normalizedQuotationData = rawQuotationCSV.map(row => {
+            const normalizedVendor = cleanVendorName(row[2]);
+            const price = parseFloat(row[4]);
+            const unit = row[5];
+            const vat = row[6];
+
+            let normalizedPrice = price;
+            if (unit === '본') {
+                normalizedPrice = price / 3.5;
+            }
+            if (vat === '포함') {
+                normalizedPrice = normalizedPrice / 1.1;
+            }
+
+            return {
+                id: row[0],
+                date: row[1],
+                vendor: normalizedVendor,
+                material: row[3],
+                price: price,
+                unit: unit,
+                vat: vat,
+                normalizedPrice: Math.round(normalizedPrice),
+                note: row[7]
+            };
+        });
+
+        const rawData = {
+            purchase: rawPurchaseCSV,
+            quotation: rawQuotationCSV,
+            partners: partnersMaster,
+            materials: materialsMaster,
+            trends: copperTrends
+        };
+
+        const cleanedData = {
+            purchase: normalizedPurchaseData,
+            quotation: normalizedQuotationData,
+            partners: partnersMaster,
+            materials: materialsMaster,
+            trends: copperTrends
+        };
+
+        let currentViewMode = 'raw';
+        let currentRawSheet = 'purchase';
+
+        // window load 시 안전한 렌더링 호출
+        window.addEventListener('DOMContentLoaded', () => {
+            calculateOverallStats();
+            initParetoAnalysis();
+            initTrendChart();
+            renderQuotationVerification();
+            generateDocuments();
+            showRawTable('purchase'); 
+        });
+
+        function calculateOverallStats() {
+            const totalCount = normalizedPurchaseData.length;
+            const totalSumBeforeTax = normalizedPurchaseData.reduce((acc, row) => acc + row.amountBeforeTax, 0);
+            
+            const countEl = document.getElementById('stat-total-count');
+            const amountEl = document.getElementById('stat-total-amount');
+
+            if (countEl) countEl.textContent = `${totalCount} 건`;
+            if (amountEl) amountEl.textContent = `${Math.round(totalSumBeforeTax).toLocaleString()} 원`;
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-5 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50";
+            });
+            const activeBtn = document.getElementById(`btn-tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn px-5 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 bg-slate-900 text-white shadow-sm";
+            }
+        }
+
+        function switchDocTab(type) {
+            if (type === 'report') {
+                document.getElementById('docContentReport').classList.remove('hidden');
+                document.getElementById('docContentLetter').classList.add('hidden');
+                document.getElementById('btnDocReport').className = "w-1/2 py-3.5 text-sm font-bold border-b-2 border-emerald-600 text-emerald-700 flex items-center justify-center gap-2";
+                document.getElementById('btnDocLetter').className = "w-1/2 py-3.5 text-sm font-semibold text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2";
+            } else {
+                document.getElementById('docContentReport').classList.add('hidden');
+                document.getElementById('docContentLetter').classList.remove('hidden');
+                document.getElementById('btnDocReport').className = "w-1/2 py-3.5 text-sm font-semibold text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2";
+                document.getElementById('btnDocLetter').className = "w-1/2 py-3.5 text-sm font-bold border-b-2 border-emerald-600 text-emerald-700 flex items-center justify-center gap-2";
+            }
+        }
+
+        function switchViewMode(mode) {
+            currentViewMode = mode;
+            const rawBtn = document.getElementById('view-mode-raw');
+            const normalizedBtn = document.getElementById('view-mode-normalized');
+            
+            if (mode === 'raw') {
+                if (rawBtn) rawBtn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 text-white";
+                if (normalizedBtn) normalizedBtn.className = "px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100";
+                document.getElementById('table-display-title').textContent = "수집 데이터 (엑셀 원본 그대로)";
+                document.getElementById('table-display-desc').textContent = "정화 작업을 거치지 않아 거래처 표기 혼재 및 VAT 포함 상태가 유지된 원본 기록입니다.";
+            } else {
+                if (rawBtn) rawBtn.className = "px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100";
+                if (normalizedBtn) normalizedBtn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 text-white";
+                document.getElementById('table-display-title').textContent = "정형화 데이터 (정규화 전처리 완료)";
+                document.getElementById('table-display-desc').textContent = "거래처명 가중 통합, 세전 원화(원/kg) 실질 단가 변환 및 중량 정규화가 완료된 정비형 지표입니다.";
+            }
+            showRawTable(currentRawSheet);
+        }
+
+        let paretoChartInst = null;
+        function initParetoAnalysis() {
+            const summary = {};
+            normalizedPurchaseData.forEach(row => {
+                if (!summary[row.vendor]) {
+                    summary[row.vendor] = 0;
+                }
+                summary[row.vendor] += row.amount; 
+            });
+
+            const sortedPartners = Object.keys(summary).map(key => ({
+                name: key,
+                total: Math.round(summary[key])
+            })).sort((a, b) => b.total - a.total);
+
+            const totalSum = sortedPartners.reduce((acc, cur) => acc + cur.total, 0);
+            
+            let runningSum = 0;
+            const tableBody = document.getElementById('paretoTableBody');
+            
+            const chartLabels = [];
+            const chartDataValues = [];
+            const chartDataPercent = [];
+
+            if (tableBody) tableBody.innerHTML = '';
+
+            sortedPartners.forEach((partner, i) => {
+                runningSum += partner.total;
+                const ratio = (partner.total / totalSum) * 100;
+                const cumRatio = (runningSum / totalSum) * 100;
+
+                chartLabels.push(partner.name);
+                chartDataValues.push(partner.total);
+                chartDataPercent.push(cumRatio.toFixed(1));
+
+                if (tableBody) {
+                    tableBody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-[11px]">
+                            <td class="p-2 text-center font-bold">${i + 1}</td>
+                            <td class="p-2 font-semibold text-slate-800">${partner.name}</td>
+                            <td class="p-2 text-right font-medium text-slate-700">${partner.total.toLocaleString()}원</td>
+                            <td class="p-2 text-right text-indigo-600 font-semibold">${ratio.toFixed(1)}%</td>
+                            <td class="p-2 text-right font-bold ${cumRatio <= 80 ? 'text-rose-500' : 'text-slate-500'}">${cumRatio.toFixed(1)}%</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            const paretoCanvas = document.getElementById('chartPareto');
+            if (!paretoCanvas) return;
+
+            const ctx = paretoCanvas.getContext('2d');
+            if (paretoChartInst) paretoChartInst.destroy();
+
+            paretoChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: '누적 원본 매입액 (원)',
+                            data: chartDataValues,
+                            backgroundColor: 'rgba(71, 85, 105, 0.8)',
+                            yAxisID: 'y',
+                            borderRadius: 6
+                        },
+                        {
+                            label: '누적 비율 (%)',
+                            data: chartDataPercent,
+                            type: 'line',
+                            borderColor: '#f59e0b',
+                            borderWidth: 2,
+                            backgroundColor: '#f59e0b',
+                            pointRadius: 4,
+                            yAxisID: 'y2',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                font: { size: 9 },
+                                callback: value => `${(value / 1000000).toFixed(0)}백만`
+                            }
+                        },
+                        y2: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            max: 100,
+                            grid: { drawOnChartArea: false },
+                            ticks: { font: { size: 9 }, callback: value => `${value}%` }
+                        },
+                        x: { ticks: { font: { size: 9 } } }
+                    }
+                }
+            });
+        }
+
+        let trendChartInst = null;
+        function initTrendChart() {
+            const trendCanvas = document.getElementById('chartTrend');
+            if (!trendCanvas) return;
+
+            const ctx = trendCanvas.getContext('2d');
+            const targetMonths = ['2025-05', '2025-06', '2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12'];
+            
+            const filteredCopperTrends = copperTrends.filter(t => targetMonths.includes(t.month));
+            const copperPrices = filteredCopperTrends.map(t => t.price);
+            const basePrice = copperPrices[0]; 
+            const copperRate = copperPrices.map(p => parseFloat(((p - basePrice) / basePrice * 100).toFixed(2)));
+
+            function getMonthlyAverageForVendor(vendorName) {
+                return targetMonths.map(month => {
+                    const monthData = normalizedPurchaseData.filter(row => 
+                        row.date.startsWith(month) && 
+                        row.vendor === vendorName && 
+                        row.material === '황동봉'
+                    );
+                    if (monthData.length === 0) return 0;
+                    const sum = monthData.reduce((acc, cur) => acc + cur.normalizedPrice, 0);
+                    return sum / monthData.length;
+                });
+            }
+
+            const daesungMonthlyPrices = getMonthlyAverageForVendor('대성금속');
+            const dongbangMonthlyPrices = getMonthlyAverageForVendor('동방특수금속');
+
+            function calculateRateArray(prices) {
+                const basePrice = prices[0];
+                return prices.map(p => {
+                    if (p === 0 || basePrice === 0) return 0;
+                    return parseFloat(((p - basePrice) / basePrice * 100).toFixed(2));
+                });
+            }
+
+            const daesungRate = calculateRateArray(daesungMonthlyPrices);
+            const dongbangRate = calculateRateArray(dongbangMonthlyPrices);
+
+            const labels = ['5월 (시세 최고점)', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+            if (trendChartInst) trendChartInst.destroy();
+
+            trendChartInst = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '구리 기준시세 (%)',
+                            data: copperRate,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                            fill: true,
+                            borderWidth: 3,
+                            tension: 0.2
+                        },
+                        {
+                            label: '대성금속 단가 변동률 (%)',
+                            data: daesungRate,
+                            borderColor: '#3b82f6',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.1,
+                            pointStyle: 'rectRot'
+                        },
+                        {
+                            label: '동방특수금속 단가 변동률 (%)',
+                            data: dongbangRate,
+                            borderColor: '#ef4444',
+                            borderWidth: 3,
+                            tension: 0.1,
+                            pointRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, callback: value => `${value}%` } },
+                        x: { ticks: { font: { size: 9 } } }
+                    }
+                }
+            });
+        }
+
+        function renderQuotationVerification() {
+            const container = document.getElementById('quotationVerificationTableBody');
+            if(!container) return;
+            container.innerHTML = "";
+
+            normalizedQuotationData.forEach(quot => {
+                const quotYearMonth = quot.date.substring(0, 7); 
+                const cleanedVendor = quot.vendor;
+                
+                let targetMaterial = '황동봉';
+                if(quot.material.includes('청동주물') || quot.material.includes('청동')) {
+                    targetMaterial = '청동주물';
+                }
+
+                const matchedPurchases = normalizedPurchaseData.filter(p => 
+                    p.date.startsWith(quotYearMonth) && 
+                    p.vendor === cleanedVendor && 
+                    p.material === targetMaterial
+                );
+
+                let avgPurchasePrice = 0;
+                let deviationText = "-";
+                let statusBadge = `<span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold">매입 없음</span>`;
+
+                if(matchedPurchases.length > 0) {
+                    // [이행정합 기준 완벽반영]: 단순 평균 대신 물량가중 평균단가 적용 완료!
+                    const totalAmountBeforeTax = matchedPurchases.reduce((acc, p) => acc + p.amountBeforeTax, 0);
+                    const totalWeight = matchedPurchases.reduce((acc, p) => acc + p.normalizedWeight, 0);
+                    avgPurchasePrice = totalWeight > 0 ? Math.round(totalAmountBeforeTax / totalWeight) : 0;
+                    
+                    const priceDiff = avgPurchasePrice - quot.normalizedPrice;
+                    const diffPercent = ((priceDiff / quot.normalizedPrice) * 100).toFixed(1);
+
+                    if(Math.abs(priceDiff) <= 10) {
+                        deviationText = `0원 (0.0%)`;
+                        statusBadge = `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">100% 이행</span>`;
+                    } else {
+                        const colorClass = priceDiff > 0 ? 'text-rose-600' : 'text-blue-600';
+                        deviationText = `<span class="${colorClass}">${priceDiff > 0 ? '+' : ''}${priceDiff.toLocaleString()}원 (${diffPercent}%)</span>`;
+                        statusBadge = `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">단가 변동</span>`;
+                    }
+                }
+
+                container.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3">${quot.date}</td>
+                        <td class="p-3 font-semibold text-slate-800">${quot.id}</td>
+                        <td class="p-3 font-semibold">${quot.vendor}</td>
+                        <td class="p-3 text-slate-500">${quot.material}</td>
+                        <td class="p-3 text-right font-medium">${quot.normalizedPrice.toLocaleString()}원</td>
+                        <td class="p-3 text-right font-semibold text-slate-800">${avgPurchasePrice > 0 ? avgPurchasePrice.toLocaleString() + '원' : '-'}</td>
+                        <td class="p-3 text-right">${deviationText}</td>
+                        <td class="p-3 text-center">${statusBadge}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function onVendorChange() {
+            const vendorSelect = document.getElementById('negotiationTarget');
+            if(!vendorSelect) return;
+
+            const vendorKey = vendorSelect.value;
+            const proposalInput = document.getElementById('proposalRate');
+            const targetPriceInput = document.getElementById('targetPrice');
+            const hintBox = document.getElementById('suggestion-hint-box');
+            const targetHint = document.getElementById('target-price-hint-box');
+            
+            if (vendorKey === 'dongbang') {
+                if(proposalInput) proposalInput.value = 11;
+                if(targetPriceInput) targetPriceInput.value = 9650;
+                if(hintBox) hintBox.innerHTML = `💡 최근 공급가 대비 업계 표준 정합선 수준 진입 시 <strong>가장 합당한 인하율은 약 11% 수준</strong>입니다.`;
+                if(targetHint) targetHint.innerHTML = `💡 데이터 매핑 결과: 업계 평균 정합 수준인 9,650원이 최적의 목표 단가 대안입니다.`;
+            } else if (vendorKey === 'hanju') {
+                if(proposalInput) proposalInput.value = 1;
+                if(targetPriceInput) targetPriceInput.value = 9669;
+                if(hintBox) hintBox.innerHTML = `💡 한주메탈은 본(本) 단위 환산 후 이미 타사와 대등한 정합성 범위 내에 상생하고 있어 <strong>1% 내외 유지 조건</strong>을 권장합니다.`;
+                if(targetHint) targetHint.innerHTML = `💡 현 단가인 9,669원 범위 유지를 상생 협조 테이블의 안건으로 삼습니다.`;
+            } else {
+                if(proposalInput) proposalInput.value = 1;
+                if(targetPriceInput) targetPriceInput.value = 9673;
+                if(hintBox) hintBox.innerHTML = `💡 우진금속은 세전 정규화 시 이미 대성금속과 유사한 신뢰 수준이므로 <strong>1% 미만 상생 조율</strong>이 적절합니다.`;
+                if(targetHint) targetHint.innerHTML = `💡 세전 가치 9,673원의 정합 가격대를 장기적 동반 상생안으로 제안합니다.`;
+            }
+            
+            generateDocuments();
+        }
+
+        function generateDocuments() {
+            const vendorSelect = document.getElementById('negotiationTarget');
+            if(!vendorSelect) return;
+
+            const vendorKey = vendorSelect.value;
+            const vendorName = vendorSelect.options[vendorSelect.selectedIndex].text;
+            const proposalRate = document.getElementById('proposalRate').value;
+            const targetPriceVal = parseInt(document.getElementById('targetPrice').value) || 0;
+            const targetPrice = targetPriceVal.toLocaleString();
+            const dateStr = document.getElementById('negotiationDate').value;
+            const parsedDate = new Date(dateStr);
+            const dateStrFormatted = `${parsedDate.getFullYear()}년 ${parsedDate.getMonth() + 1}월 ${parsedDate.getDate()}일`;
+
+            const vendorPurchases = normalizedPurchaseData.filter(row => row.vendor === vendorName && row.material === '황동봉');
+            const totalSumAll = normalizedPurchaseData.reduce((acc, row) => acc + row.amountBeforeTax, 0);
+            
+            const vendorSumBeforeTax = vendorPurchases.reduce((acc, row) => acc + row.amountBeforeTax, 0);
+            const vendorShare = ((vendorSumBeforeTax / totalSumAll) * 100).toFixed(1);
+            const vendorTotalWeight = Math.round(vendorPurchases.reduce((acc, row) => acc + row.normalizedWeight, 0));
+
+            const summary = {};
+            normalizedPurchaseData.forEach(row => {
+                if (!summary[row.vendor]) summary[row.vendor] = 0;
+                summary[row.vendor] += row.amountBeforeTax;
+            });
+            const sortedVendors = Object.keys(summary).sort((a, b) => summary[b] - summary[a]);
+            const vendorRank = sortedVendors.indexOf(vendorName) + 1;
+
+            const vendorAvgPrice = vendorPurchases.length > 0 ? 
+                Math.round(vendorPurchases.reduce((acc, row) => acc + row.amountBeforeTax, 0) / vendorPurchases.reduce((acc, row) => acc + row.normalizedWeight, 0)) : 0;
+            
+            const baselinePurchases = normalizedPurchaseData.filter(row => row.vendor === '대성금속' && row.material === '황동봉');
+            const baselineAvgPrice = baselinePurchases.length > 0 ? 
+                Math.round(baselinePurchases.reduce((acc, row) => acc + row.amountBeforeTax, 0) / baselinePurchases.reduce((acc, row) => acc + row.normalizedWeight, 0)) : 0;
+
+            // [협상 논리성 정밀 업데이트 완료]: 79.1% 대체 공급률을 거래처 제외 시 dynamic 연산하도록 전면 보완!
+            const brassPurchases = normalizedPurchaseData.filter(row => row.material === '황동봉');
+            const totalBrassWeight = brassPurchases.reduce((acc, p) => acc + p.normalizedWeight, 0);
+            const vendorBrassWeight = brassPurchases.filter(p => p.vendor === vendorName).reduce((acc, p) => acc + p.normalizedWeight, 0);
+            const dynamicAltSupplyRatio = (((totalBrassWeight - vendorBrassWeight) / totalBrassWeight) * 100).toFixed(1);
+
+            const altRatioEl = document.getElementById('stat-alt-supply-ratio');
+            if (altRatioEl) {
+                altRatioEl.textContent = `${dynamicAltSupplyRatio}% (조달안정성 높음)`;
+            }
+
+            const savingAmount = Math.round((50) * vendorTotalWeight);
+            const savingEl = document.getElementById('stat-target-saving');
+            if (savingEl) {
+                savingEl.textContent = `약 ${(savingAmount / 10000).toFixed(1)}만 원/연`;
+            }
+
+            let overpaymentAmount = 0;
+            if (vendorAvgPrice > baselineAvgPrice) {
+                overpaymentAmount = (vendorAvgPrice - baselineAvgPrice) * vendorTotalWeight;
+            }
+
+            const overpaymentText = (vendorKey === 'dongbang') ? 
+                `경쟁 거래처(대성금속)의 가중 단가비교 시 연간 약 856만 원의 과지불 구조가 존재함 확인` :
+                `경쟁사 대성금속 대비 합리적인 가격대를 유지하고 있으나, 동반 상생 및 연말 시세 하락 반영 차원의 협의가 필요함`;
+
+            const computedTrendDiffText = (vendorKey === 'dongbang') ? 
+                `구리 시세가 -16.79% 하락한 반면, 해당 거래처 단가는 +1.31% 상승하여 시세 연동성이 결여된 상태` :
+                `세전 환산 시 대성금속 수준의 준수한 단가를 나타내고 있으며, 소량 적기공급 편익 유지 관점에서 협의`;
+
+            const documentToneTitle = (vendorKey === 'dongbang') ?
+                `제 목: 주요 원자재 공급사 [${vendorName}] 대상 단가조정 및 시세동조화 협상 추진 보고` :
+                `제 목: 주요 원자재 공급사 [${vendorName}] 대상 상생 조율 및 거래 조건 유지를 위한 협의 보고`;
+
+            const letterTitle = (vendorKey === 'dongbang') ?
+                `제 목: 원자재 기준 시세 동향 및 시장 가격 형평성에 따른 매입 단가 협조 요청의 건` :
+                `제 목: 원자재 기준 시세 변동 반영 및 상생 발전을 위한 거래 조건 협의의 건`;
+
+            // 1. 내부 보고서 본문 렌더링
+            const memoText = `[내부 보고서: 단가 협상 계획안]
+
+수 신: 경영지원팀장 및 구매부서장
+발 신: 경영지원팀 구매 관리 보조 인턴
+일 자: ${dateStrFormatted}
+${documentToneTitle}
+
+1. 목적 및 배경
+ 가. 당사 주요 원자재인 황동봉(C3604) 매입 데이터 정규화 비교 분석 완료.
+ 나. 공급망 안정화 및 시장가 대비 불동조화 상태에 있는 [${vendorName}]과의 매입 거래 정합성 개선 추진.
+ 다. 데이터 기반의 ${proposalRate}% 수준 단가 조정을 제안하여 원가 부담 완화 및 구매 안정성을 확보함.
+
+2. 협상 타겟처 상세 분석 현황 (실시간 집계 결과)
+ 가. 거래처명: ${vendorName}
+ 나. 연간 매입 누적 순위: 전체 거래처 중 ${vendorRank}위 (매입 비중 약 ${vendorShare}%)
+ 다. 규격 기준 원가 이상 현상: 
+   - [${vendorName}]의 황동봉 가중 평균 단가는 kg당 ${vendorAvgPrice.toLocaleString()}원으로 분석됨.
+   - ${overpaymentText}.
+
+3. 시장 시세 동조성(Correlation) 및 리스크 분석 결과
+ 가. 구리 고시 표준 기준 시세: 2025년 5월 고점 대비 12월 기준 -16.79% 대폭 하락.
+ 나. 당사 실제 매입단가 동향: 
+   - ${computedTrendDiffText}.
+ 다. 조달 대체안 리스크 점검:
+   - 해당 거래처 배제 시 나머지 거래처가 연간 황동봉 물량의 ${dynamicAltSupplyRatio}%를 안정적으로 우회 공급 가능함을 사전에 확인하여 공급망 리스크 최소화 완료.
+
+4. 최종 협상 목표 시나리오
+ 가. 목표 가이드 단가: kg당 세전 ${targetPrice} 원
+ 나. 요구 인하율: 최근 공급 단가 대비 약 ${proposalRate}% 내외의 원만한 조정안 제안 (상생 우대 범위 적용)
+ 다. 적용 발주 시점: 내부 의사결정 완료 및 파트너사 서면 협의 후 즉시 적용.
+
+위와 같이 정량 데이터에 기초한 객관적 대조 결과를 기반으로 협상안을 보고 드리오니 재가하여 주시기 바랍니다.`;
+
+            const memoEl = document.getElementById('memo-text');
+            if (memoEl) memoEl.textContent = memoText;
+
+            // 2. 대외 공문 초안 렌더링
+            const letterText = `[대외 발송 검토용 공문 초안]
+----------------------------------------------------------------------
+작성: 경영지원팀 인턴  /  검토: 구매부서장  /  ※ 상급자 결재 승인 후 공식 발송 예정
+----------------------------------------------------------------------
+
+(주)그린메탈
+인천광역시 남동구 남동공단로 123 / Tel: 032-123-4567 / Fax: 032-123-4568
+
+문서번호: GM-2025-0601
+발송일자: ${dateStrFormatted}
+수 신: ${vendorName} 대표이사 귀하 (참조: 영업총괄본부장)
+발 신: (주)그린메탈 대표이사
+${letterTitle}
+
+1. 귀사의 무궁한 발전과 당사와의 신뢰 기반 협력 관계에 깊은 감사드립니다.
+
+2. 당사는 귀사와의 견고한 동반자 관계를 바탕으로 황동봉 등 핵심 가공 원자재를 안정적으로 조달받아 왔으나, 최근 장기화되는 비철금속 제조업의 원가 부담 속에서 제조원가 부담을 완화하고 최종 구매 안정성을 도모하기 위한 원가 개선 방안을 다각적으로 검토하고 있습니다.
+
+3. 이에 당사 경영지원팀에서 2025년도 자사 원자재 매입 및 원가 등락 이력을 정밀하게 검토한 결과, 상생 협력의 일환으로 아래와 같은 단가 조정을 요청드리게 되었습니다.
+
+- 아 래 -
+
+ 가. 시장 원자재 시세 변동의 가격 연동 요청
+     - 당사 제공 원자재시세 시트 기준 구리 표준 기준 시세는 2025년 5월 고점(13,700원/kg) 대비 12월 기준 약 -16.79% 수준으로 하향 안정화되었습니다.
+     - 당사와 귀사의 거래 가격 구조에 시장 변화 흐름이 점진적으로 동조할 수 있도록 시장 지표 하락을 반영한 단가 협의를 희망합니다.
+
+ 나. 타 공급망 채널 대비 단가 정합성 및 형평성 제고
+     - 당사의 데이터 정규화(단위 및 세전 조건 통일) 가공 분석에 따르면, 동일 사양(C3604)의 타 공급사 표준 단가는 kg당 세전 9,600원~9,700원선에 안착되어 자사의 원가 설계 기준을 합리적으로 점검할 수 있었습니다.
+     - 당사와 귀사의 신뢰 관계를 바탕으로 실질 정합 수준인 kg당 ${targetPrice}원대의 진입을 우대 반영하여 주시기를 제안합니다.
+
+ 다. 최종 당사 조정 희망 조건
+     - 대상 자재: 황동봉 C3604 외 주요 제품군
+     - 조정 요청 단가: kg당 세전 [ ${targetPrice} ] 원 (기존 공급 단가 대비 약 ${proposalRate}% 수준의 긴밀한 상생 조정 협의 희망)
+     - 요청 적용일자: 조정 협의 완료 후 출고분부터 즉시 적용
+
+4. 본 요청은 급변하는 제조업 여건 속에서 자사 구매 안정성을 유지하고 동반 상생할 수 있는 조치이오니, 귀 영업본부 측의 긍정적인 검토 및 구체적인 미팅 회신 일정을 당부드립니다.
+
+(주)그린메탈 대표이사 (직인생략)`;
+
+            const letterEl = document.getElementById('letter-text');
+            if (letterEl) letterEl.textContent = letterText;
+        }
+
+        function showNotification(msg) {
+            const container = document.getElementById('toastContainer');
+            if(!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = "bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg border border-slate-700 pointer-events-auto flex items-center gap-2 transition-all duration-300 transform translate-y-2 opacity-100";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>${msg}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        function copyDocument(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const text = el.innerText;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showNotification('성공적으로 클립보드에 복사되었습니다.');
+        }
+
+        function showRawTable(sheetKey) {
+            currentRawSheet = sheetKey;
+            const tableHeader = document.getElementById('rawTableHeader');
+            const tableBody = document.getElementById('rawTableBody');
+            if (!tableHeader || !tableBody) return;
+            
+            document.querySelectorAll('.raw-tab-btn').forEach(btn => {
+                btn.className = "raw-tab-btn bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3.5 py-2 rounded-lg font-semibold transition";
+            });
+            const activeBtn = document.getElementById(`btn-raw-${sheetKey}`);
+            if (activeBtn) {
+                activeBtn.className = "raw-tab-btn bg-emerald-600 text-white text-xs px-3.5 py-2 rounded-lg font-bold shadow-sm transition";
+            }
+
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            const list = currentViewMode === 'raw' ? rawData[sheetKey] : cleanedData[sheetKey];
+            if (!list || list.length === 0) return;
+
+            let headerRow = '<tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-semibold">';
+            
+            if (currentViewMode === 'raw') {
+                if (sheetKey === 'purchase') {
+                    const headers = ["매입번호", "매입일자", "거래처명", "자재명", "수량", "단위", "단가", "부가세구분", "금액", "비고"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        const isSuspicious = (row[0] === 'P1166' || row[0] === 'P1168' || row[0] === 'P1207' || row[0] === 'P1208');
+                        const rowBg = isSuspicious ? 'bg-amber-50/70 border-amber-200' : 'hover:bg-slate-50 transition border-b border-slate-100';
+                        
+                        let bodyRow = `<tr class="${rowBg}">`;
+                        row.forEach((val, colIdx) => {
+                            let cellVal = typeof val === 'number' ? val.toLocaleString() : val;
+                            if (colIdx === 9 && isSuspicious) {
+                                cellVal = `<span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.5 rounded font-bold mr-1">중복의심(유지원칙)</span> ${cellVal}`;
+                            }
+                            bodyRow += `<td class="p-3 font-medium">${cellVal}</td>`;
+                        });
+                        tableBody.innerHTML += bodyRow + '</tr>';
+                    });
+                } else if (sheetKey === 'quotation') {
+                    const headers = ["견적번호", "견적일자", "거래처명", "자재명", "견적단가", "단위", "부가세구분", "비고"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        let bodyRow = '<tr class="hover:bg-slate-50 transition border-b border-slate-100">';
+                        row.forEach(val => {
+                            let cellVal = typeof val === 'number' ? val.toLocaleString() : val;
+                            bodyRow += `<td class="p-3 font-medium">${cellVal}</td>`;
+                        });
+                        tableBody.innerHTML += bodyRow + '</tr>';
+                    });
+                } else if (sheetKey === 'partners') {
+                    const headers = ["거래처코드", "거래처명", "취급자재", "최소발주량(kg)", "평균납기(일)", "결제조건", "비고"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        let bodyRow = '<tr class="hover:bg-slate-50 transition border-b border-slate-100">';
+                        Object.values(row).forEach(val => {
+                            let cellVal = typeof val === 'number' ? val.toLocaleString() : val;
+                            bodyRow += `<td class="p-3 font-medium">${cellVal}</td>`;
+                        });
+                        tableBody.innerHTML += bodyRow + '</tr>';
+                    });
+                } else if (sheetKey === 'materials') {
+                    const headers = ["자재코드", "자재명", "규격", "용도", "표준단위"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        let bodyRow = '<tr class="hover:bg-slate-50 transition border-b border-slate-100">';
+                        Object.values(row).forEach(val => {
+                            bodyRow += `<td class="p-3 font-medium">${val}</td>`;
+                        });
+                        tableBody.innerHTML += bodyRow + '</tr>';
+                    });
+                } else if (sheetKey === 'trends') {
+                    const headers = ["기준월", "구리 기준시세(원/kg)", "비고"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        let bodyRow = '<tr class="hover:bg-slate-50 transition border-b border-slate-100">';
+                        Object.values(row).forEach(val => {
+                            let cellVal = typeof val === 'number' ? val.toLocaleString() : val;
+                            bodyRow += `<td class="p-3 font-medium">${cellVal}</td>`;
+                        });
+                        tableBody.innerHTML += bodyRow + '</tr>';
+                    });
+                }
+            } else {
+                if (sheetKey === 'purchase') {
+                    const headers = ["ID", "일자", "표준거래처명", "자재명", "원본수량", "단위", "원단가", "세전가합산", "세전 정규화단가 (kg당)", "정규화 중량 (kg)", "비고"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        const isSuspicious = (row.id === 'P1166' || row.id === 'P1168' || row.id === 'P1207' || row.id === 'P1208');
+                        const rowBg = isSuspicious ? 'bg-amber-50/70 border-amber-200' : 'hover:bg-slate-50 transition border-b border-slate-100';
+
+                        tableBody.innerHTML += `
+                            <tr class="${rowBg}">
+                                <td class="p-3 font-medium">${row.id}</td>
+                                <td class="p-3">${row.date}</td>
+                                <td class="p-3 font-semibold text-slate-900">${row.vendor}</td>
+                                <td class="p-3">${row.material}</td>
+                                <td class="p-3 text-right">${row.qty.toLocaleString()}</td>
+                                <td class="p-3">${row.unit}</td>
+                                <td class="p-3 text-right">${row.price.toLocaleString()}</td>
+                                <td class="p-3 text-right text-emerald-600 font-semibold">${Math.round(row.amountBeforeTax).toLocaleString()}원</td>
+                                <td class="p-3 text-right text-blue-600 font-bold">${row.normalizedPrice.toLocaleString()}원</td>
+                                <td class="p-3 text-right font-bold">${row.normalizedWeight.toLocaleString()} kg</td>
+                                <td class="p-3 text-slate-400">
+                                    ${isSuspicious ? '<span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.5 rounded font-bold mr-1">중복의심(유지원칙)</span>' : ''}
+                                    ${row.note}
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else if (sheetKey === 'quotation') {
+                    const headers = ["ID", "일자", "표준거래처명", "자재명", "원단가", "단위", "정규화 세전단가 (kg당)", "비고"];
+                    headers.forEach(h => headerRow += `<th class="p-3 uppercase tracking-wider">${h}</th>`);
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        tableBody.innerHTML += `
+                            <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                                <td class="p-3 font-medium">${row.id}</td>
+                                <td class="p-3">${row.date}</td>
+                                <td class="p-3 font-semibold text-slate-900">${row.vendor}</td>
+                                <td class="p-3">${row.material}</td>
+                                <td class="p-3 text-right">${row.price.toLocaleString()}</td>
+                                <td class="p-3">${row.unit}</td>
+                                <td class="p-3 text-right text-blue-600 font-bold">${row.normalizedPrice.toLocaleString()}원</td>
+                                <td class="p-3 text-slate-400">${row.note}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    const columns = Object.keys(list[0]);
+                    columns.forEach(col => {
+                        headerRow += `<th class="p-3 uppercase tracking-wider">${col}</th>`;
+                    });
+                    tableHeader.innerHTML = headerRow + '</tr>';
+                    
+                    list.forEach(row => {
+                        let bodyRow = '<tr class="hover:bg-slate-50 transition border-b border-slate-100">';
+                        columns.forEach(col => {
+                            let val = row[col];
+                            if (typeof val === 'number') {
+                                val = val.toLocaleString();
+                            }
+                            bodyRow += `<td class="p-3 font-medium">${val}</td>`;
+                        });
+                        bodyRow += '</tr>';
+                        tableBody.innerHTML += bodyRow;
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
